@@ -31,12 +31,14 @@ export class UsersService {
     return newUser.userId;
   }
 
-  findAll() {
-    return this.userRepository.findAllUsers();
+  async findAll() {
+    const users = await this.userRepository.findAllUsers();
+    return users.map(user => new UserDto(user));
   }
 
   async findOne(id: string) {
     const user = await this.userRepository.findUserById(id);
+
     if (!user) {
       throw new NotFoundException(`User not found`);
     }
@@ -48,7 +50,11 @@ export class UsersService {
     return this.userRepository.updateUserById({ userId: id, ...updateUserDto });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async delete(id: string) {
+    const { affected } = await this.userRepository.deleteUserById(id);
+    if (!!affected) {
+      return;
+    }
+    throw new NotFoundException('User not found.');
   }
 }

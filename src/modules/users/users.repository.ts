@@ -1,7 +1,8 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
 import { DeepPartial, Repository } from "typeorm";
-import { BadRequestException } from "@nestjs/common";
+import { BadRequestException, NotFoundException } from "@nestjs/common";
+import { DeleteResult } from "typeorm/browser";
 
 export class UserRepository {
   constructor(
@@ -34,7 +35,7 @@ export class UserRepository {
     return this.userRepository.update({ userId: params.userId }, params);
   }
 
-  // async save<T extends DeepPartial<User>>(entity: T): Promise<User> {
-  //   return this.userRepository.save(entity);
-  // }
+  deleteUserById(userId: string): Promise<DeleteResult> {
+    return this.userRepository.delete({ userId });
+  }
 }
