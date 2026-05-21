@@ -46,13 +46,17 @@ export class UsersService {
     return new UserDto(user);
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return this.userRepository.updateUserById({ userId: id, ...updateUserDto });
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.updateUserById({ userId: id, ...updateUserDto });
+    if (user) {
+      return new UserDto(user);
+    }
+    throw new NotFoundException('User not found.');
   }
 
   async delete(id: string) {
-    const { affected } = await this.userRepository.deleteUserById(id);
-    if (!!affected) {
+    const userDeleted = await this.userRepository.deleteUserById(id);
+    if (userDeleted) {
       return;
     }
     throw new NotFoundException('User not found.');

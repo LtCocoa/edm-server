@@ -19,23 +19,58 @@ export class UserRepository {
     }
   }
 
-  findAllUsers() {
-    return this.userRepository.find();
+  async findAllUsers(): Promise<User[]> {
+    try {
+      return this.userRepository.find();
+    } catch (error) {
+      console.error(error);
+    }
+    return [];
   }
 
-  findUserByLogin(login: string): Promise<User | null> {
-    return this.userRepository.findOneBy({ login });
+  async findUserByLogin(login: string): Promise<User | null> {
+    try {
+      const user = await this.userRepository.findOneBy({ login });
+      return user;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   }
 
-  findUserById(userId: string): Promise<User | null> {
-    return this.userRepository.findOneBy({ userId });
+  async findUserById(userId: string): Promise<User | null> {
+    try {
+      const user = await this.userRepository.findOneBy({ userId });
+      return user;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   }
 
-  updateUserById(params: DeepPartial<User>) {
-    return this.userRepository.update({ userId: params.userId }, params);
+  async updateUserById(params: DeepPartial<User>) {
+    const { userId } = params;
+    try {
+      const { affected } = await this.userRepository.update({ userId }, params);
+      if (!!affected) {
+        const updatedUser = await this.userRepository.findOneBy({ userId });
+        return updatedUser;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    return null;
   }
 
-  deleteUserById(userId: string): Promise<DeleteResult> {
-    return this.userRepository.delete({ userId });
+  async deleteUserById(userId: string): Promise<boolean> {
+    try {
+      const { affected } = await this.userRepository.delete({ userId });
+      if (!!affected) {
+        return true;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    return false;
   }
 }
