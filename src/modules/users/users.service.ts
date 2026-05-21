@@ -4,7 +4,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './users.repository';
 import * as crypto from 'node:crypto';
 import * as argon from 'argon2';
-import { UserDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -31,27 +30,20 @@ export class UsersService {
     return newUser.userId;
   }
 
-  async findAll() {
-    const users = await this.userRepository.findAllUsers();
-    return users.map(user => new UserDto(user));
+  findAll() {
+    return this.userRepository.findAllUsers();
   }
 
-  async findOne(id: string) {
-    const user = await this.userRepository.findUserById(id);
-
-    if (!user) {
-      throw new NotFoundException(`User not found`);
-    }
-
-    return new UserDto(user);
+  findOneById(id: string) {
+    return this.userRepository.findUserById(id);
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.updateUserById({ userId: id, ...updateUserDto });
-    if (user) {
-      return new UserDto(user);
-    }
-    throw new NotFoundException('User not found.');
+  findOneByLogin(login: string) {
+    return this.userRepository.findUserByLogin(login);
+  }
+
+  update(id: string, updateUserDto: UpdateUserDto) {
+    return this.userRepository.updateUserById({ userId: id, ...updateUserDto });
   }
 
   async delete(id: string) {
