@@ -4,6 +4,7 @@ import { RolesModule } from './modules/roles/roles.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './modules/database/database.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     }),
     DatabaseModule,
     UsersModule,
-    RolesModule
+    RolesModule,
+    AuthModule,
   ],
   providers: [
     {
