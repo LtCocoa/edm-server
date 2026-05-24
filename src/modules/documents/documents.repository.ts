@@ -1,7 +1,7 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { Document } from "./entities/document.entity";
 import { DeepPartial, Repository } from "typeorm";
-import { UpdateDocumentRequestDto } from "./dto/requests/update-document.dto";
+import { UpdateDocumentRequestDto } from "./dto/requests/update-document.request-dto";
 
 export class DocumentsRepository {
   constructor(
@@ -38,8 +38,7 @@ export class DocumentsRepository {
     });
   }
 
-  async update(params: UpdateDocumentRequestDto) {
-    const { documentId } = params;
+  async update(documentId: string, params: UpdateDocumentRequestDto) {
     try {
       const { affected } = await this.documentsRepository.update({ documentId }, params);
       if (!affected) {

@@ -1,6 +1,6 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from './dto/requests/create-user.dto';
-import { UpdateUserDto } from './dto/requests/update-user.dto';
+import { CreateUserDto } from './dto/requests/create-user.request-dto';
+import { UpdateUserDto } from './dto/requests/update-user.request-dto';
 import { UsersRepository } from './users.repository';
 import * as crypto from 'node:crypto';
 import * as argon from 'argon2';

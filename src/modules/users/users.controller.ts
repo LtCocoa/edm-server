@@ -9,8 +9,8 @@ import {
   NotFoundException
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/requests/update-user.dto';
-import { UserResponseDto } from './dto/responses/user.dto';
+import { UpdateUserDto } from './dto/requests/update-user.request-dto';
+import { UserResponseDto } from './dto/responses/user.response.dto';
 
 @Controller('users')
 export class UsersController {

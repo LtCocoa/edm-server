@@ -3,7 +3,7 @@ import { DocumentType } from "./document_types";
 import { User } from "../../users/entities/user.entity";
 
 @Entity({
-  name: 'Document',
+  name: 'documents',
 })
 export class Document {
   @PrimaryGeneratedColumn('uuid', {
