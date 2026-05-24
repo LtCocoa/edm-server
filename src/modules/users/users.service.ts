@@ -1,14 +1,14 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UserRepository } from './users.repository';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { CreateUserDto } from './dto/requests/create-user.dto';
+import { UpdateUserDto } from './dto/requests/update-user.dto';
+import { UsersRepository } from './users.repository';
 import * as crypto from 'node:crypto';
 import * as argon from 'argon2';
 
 @Injectable()
 export class UsersService {
   constructor(
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: UsersRepository,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -27,7 +27,7 @@ export class UsersService {
       ...createUserDto
     });
 
-    return newUser.userId;
+    return newUser;
   }
 
   findAll() {

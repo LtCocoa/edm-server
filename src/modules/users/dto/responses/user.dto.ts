@@ -1,8 +1,8 @@
-import { User } from "../entities/user.entity";
+import { User } from "../../entities/user.entity";
 import { Expose, plainToInstance } from "class-transformer";
 import { IsString } from "class-validator";
 
-export class UserDto {
+export class UserResponseDto {
   @Expose()
   @IsString()
   userId!: string;
@@ -16,6 +16,6 @@ export class UserDto {
   name!: string;
 
   constructor(entity: Partial<User>) {
-    return plainToInstance(UserDto, entity, { excludeExtraneousValues: true });
+    return plainToInstance(UserResponseDto, entity, { excludeExtraneousValues: true });
   }
 }

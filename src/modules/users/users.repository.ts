@@ -1,18 +1,17 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
 import { DeepPartial, Repository } from "typeorm";
-import { BadRequestException, NotFoundException } from "@nestjs/common";
-import { DeleteResult } from "typeorm/browser";
+import { BadRequestException } from "@nestjs/common";
 
-export class UserRepository {
+export class UsersRepository {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly usersRepository: Repository<User>
   ) {}
 
-  async createUser<T extends DeepPartial<User>>(entity: T): Promise<User> {
+  async createUser<T extends DeepPartial<User>>(entity: T): Promise<User | null> {
     try {
-      const savedUser = await this.userRepository.save(entity);
+      const savedUser = await this.usersRepository.save(entity);
       return savedUser;
     } catch (error: unknown) {
       throw new BadRequestException((error as Error).message);
@@ -21,7 +20,7 @@ export class UserRepository {
 
   async findAllUsers(): Promise<User[]> {
     try {
-      return this.userRepository.find();
+      return this.usersRepository.find();
     } catch (error) {
       console.error(error);
     }
@@ -30,7 +29,7 @@ export class UserRepository {
 
   async findUserByLogin(login: string): Promise<User | null> {
     try {
-      const user = await this.userRepository.findOneBy({ login });
+      const user = await this.usersRepository.findOneBy({ login });
       return user;
     } catch (error) {
       console.error(error);
@@ -40,7 +39,7 @@ export class UserRepository {
 
   async findUserById(userId: string): Promise<User | null> {
     try {
-      const user = await this.userRepository.findOneBy({ userId });
+      const user = await this.usersRepository.findOneBy({ userId });
       return user;
     } catch (error) {
       console.error(error);
@@ -51,9 +50,9 @@ export class UserRepository {
   async updateUserById(params: DeepPartial<User>) {
     const { userId } = params;
     try {
-      const { affected } = await this.userRepository.update({ userId }, params);
+      const { affected } = await this.usersRepository.update({ userId }, params);
       if (!!affected) {
-        const updatedUser = await this.userRepository.findOneBy({ userId });
+        const updatedUser = await this.usersRepository.findOneBy({ userId });
         return updatedUser;
       }
     } catch (error) {
@@ -64,7 +63,7 @@ export class UserRepository {
 
   async deleteUserById(userId: string): Promise<boolean> {
     try {
-      const { affected } = await this.userRepository.delete({ userId });
+      const { affected } = await this.usersRepository.delete({ userId });
       if (!!affected) {
         return true;
       }
