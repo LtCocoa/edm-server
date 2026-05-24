@@ -15,6 +15,7 @@ async function bootstrap() {
   app.setGlobalPrefix(prefix);
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
+    transform: true,
   }));
 
   await app.listen(port);

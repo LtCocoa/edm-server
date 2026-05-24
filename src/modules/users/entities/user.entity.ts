@@ -1,5 +1,6 @@
-import { Exclude, Expose } from '@nestjs/class-transformer';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude, Expose } from 'class-transformer';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Document } from '../../documents/entities/document.entity';
 
 @Entity({
   name: 'User'
@@ -30,6 +31,7 @@ export class User {
     nullable: false,
     length: 20,
   })
+  @Exclude({ toPlainOnly: true })
   password!: string;
 
   @Column('varchar', {
@@ -43,6 +45,9 @@ export class User {
   })
   @Exclude({ toPlainOnly: true })
   passwordSalt!: string;
+
+  @OneToMany(() => Document, (document) => document.user)
+  documents!: Document[];
 
   constructor(partial?: Partial<User>) {
     if (partial) {

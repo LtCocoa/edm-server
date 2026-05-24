@@ -9,8 +9,8 @@ import {
   NotFoundException
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UserDto } from './dto/user.dto';
+import { UpdateUserDto } from './dto/requests/update-user.dto';
+import { UserResponseDto } from './dto/responses/user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -20,7 +20,7 @@ export class UsersController {
   async findAll() {
     const users = await this.usersService.findAll();
 
-    return users.map(user => new UserDto(user));
+    return users.map(user => new UserResponseDto(user));
   }
 
   @Get(':id')
@@ -29,14 +29,14 @@ export class UsersController {
     if (!user) {
       throw new NotFoundException(`User not found`);
     }
-    return new UserDto(user);
+    return new UserResponseDto(user);
   }
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     const user = await this.usersService.update(id, updateUserDto);
     if (user) {
-      return new UserDto(user);
+      return new UserResponseDto(user);
     }
     throw new NotFoundException('User not found.');
   }
