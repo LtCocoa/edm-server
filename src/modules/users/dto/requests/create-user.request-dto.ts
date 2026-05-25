@@ -1,22 +1,21 @@
-import { Expose } from "class-transformer";
-import { IsString, MaxLength, MinLength } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString, MaxLength, MinLength } from "class-validator";
 
-export class CreateUserDto { 
-  @Expose()
+export class CreateUserRequestDto { 
   @IsString()
   @MinLength(4)
   @MaxLength(20)
   login!: string;
 
-  @Expose()
   @IsString()
   @MinLength(4)
   @MaxLength(20)
   password!: string;
 
-  @Expose()
   @IsString()
   @MinLength(4)
   @MaxLength(20)
   name!: string;
+
+  @IsNumber()
+  roleId!: number;
 }

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, Post, Request, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from '../users/dto/requests/create-user.request-dto';
+import { CreateUserRequestDto } from '../users/dto/requests/create-user.request-dto';
 import { LocalAuthGuard } from './local-auth.guard';
 import { UserResponseDto } from '../users/dto/responses/user.response.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -10,7 +10,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  register(@Body() registerDto: CreateUserDto) {
+  register(@Body() registerDto: CreateUserRequestDto) {
     return this.authService.registerUser(registerDto);
   }
 
