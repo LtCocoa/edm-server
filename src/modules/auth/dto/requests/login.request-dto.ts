@@ -1,7 +1,7 @@
 import { Expose } from "@nestjs/class-transformer";
 import { IsString, MaxLength, MinLength } from "class-validator";
 
-export class LoginDto { 
+export class LoginRequestDto { 
   @Expose()
   @IsString()
   @MinLength(4)

@@ -1,9 +1,10 @@
-import { Exclude, Expose } from 'class-transformer';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Exclude } from 'class-transformer';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { Document } from '../../documents/entities/document.entity';
+import { Role } from '../../database/entities/role.entity';
 
 @Entity({
-  name: 'User'
+  name: 'users'
 })
 export class User {
   @PrimaryGeneratedColumn('uuid', {
@@ -48,6 +49,12 @@ export class User {
 
   @OneToMany(() => Document, (document) => document.user)
   documents!: Document[];
+
+  @ManyToOne(() => Role, {
+    nullable: false,
+  })
+  @JoinColumn({ name: 'role_id', referencedColumnName: 'id' })
+  role!: Role;
 
   constructor(partial?: Partial<User>) {
     if (partial) {

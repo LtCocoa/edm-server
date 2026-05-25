@@ -20,7 +20,10 @@ export class UsersRepository {
 
   async findAllUsers(): Promise<User[]> {
     try {
-      return this.usersRepository.find();
+      return this.usersRepository.find({ relations: {
+        documents: true,
+        role: true,
+      }});
     } catch (error) {
       console.error(error);
     }
@@ -29,7 +32,13 @@ export class UsersRepository {
 
   async findUserByLogin(login: string): Promise<User | null> {
     try {
-      const user = await this.usersRepository.findOneBy({ login });
+      const user = await this.usersRepository.findOne({ 
+        where: { login },
+        relations: {
+          documents: true,
+          role: true,
+        }
+      });
       return user;
     } catch (error) {
       console.error(error);
@@ -39,7 +48,13 @@ export class UsersRepository {
 
   async findUserById(userId: string): Promise<User | null> {
     try {
-      const user = await this.usersRepository.findOneBy({ userId });
+      const user = await this.usersRepository.findOne({ 
+        where: { userId },
+        relations: {
+          documents: true,
+          role: true,
+        }
+      });
       return user;
     } catch (error) {
       console.error(error);
@@ -52,7 +67,13 @@ export class UsersRepository {
     try {
       const { affected } = await this.usersRepository.update({ userId }, params);
       if (!!affected) {
-        const updatedUser = await this.usersRepository.findOneBy({ userId });
+        const updatedUser = await this.usersRepository.findOne({ 
+        where: { userId },
+        relations: {
+          documents: true,
+          role: true,
+        }
+      });
         return updatedUser;
       }
     } catch (error) {

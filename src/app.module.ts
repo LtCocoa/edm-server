@@ -1,6 +1,5 @@
 import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { UsersModule } from './modules/users/users.module';
-import { RolesModule } from './modules/roles/roles.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './modules/database/database.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -14,7 +13,6 @@ import { DocumentsModule } from './modules/documents/documents.module';
     }),
     DatabaseModule,
     UsersModule,
-    RolesModule,
     AuthModule,
     DocumentsModule,
   ],

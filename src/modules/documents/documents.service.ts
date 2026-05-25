@@ -1,8 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateDocumentRequestDto } from './dto/requests/create-document.dto';
-import { UpdateDocumentRequestDto } from './dto/requests/update-document.dto';
+import { CreateDocumentRequestDto } from './dto/requests/create-document.request-dto';
+import { UpdateDocumentRequestDto } from './dto/requests/update-document.request-dto';
 import { DocumentsRepository } from './documents.repository';
 import { UsersService } from '../users/users.service';
+import { Document } from './entities/document.entity';
 
 @Injectable()
 export class DocumentsService {
@@ -11,12 +12,17 @@ export class DocumentsService {
     private readonly usersService: UsersService,
   ) {}
 
-  async create(createDocumentDto: CreateDocumentRequestDto) {
-    const user = await this.usersService.findOneById(createDocumentDto.user.userId);
+  async create(userId: string, createDocumentDto: CreateDocumentRequestDto) {
+    const user = await this.usersService.findOneById(userId);
     if (!user) {
       throw new HttpException('User not found.', HttpStatus.FAILED_DEPENDENCY);
     }
-    return this.documentsRepository.createDocument(createDocumentDto);
+    return this.documentsRepository.createDocument({
+      user: {
+        userId
+      },
+      ...createDocumentDto
+    });
   }
 
   findAll() {
@@ -31,8 +37,8 @@ export class DocumentsService {
     return null;
   }
 
-  update(updateDocumentDto: UpdateDocumentRequestDto) {
-    return this.documentsRepository.update(updateDocumentDto);
+  update(documentId: string, updateDocumentDto: UpdateDocumentRequestDto) {
+    return this.documentsRepository.update(documentId, updateDocumentDto);
   }
 
   remove(id: string) {

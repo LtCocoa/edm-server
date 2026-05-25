@@ -2,10 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { databaseOptions } from './database.config';
+import { Role } from './entities/role.entity';
 
 @Module({
   imports: [
     ConfigModule,
+    TypeOrmModule.forFeature([Role]),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

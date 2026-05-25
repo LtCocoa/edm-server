@@ -1,6 +1,6 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from './dto/requests/create-user.dto';
-import { UpdateUserDto } from './dto/requests/update-user.dto';
+import { CreateUserRequestDto } from './dto/requests/create-user.request-dto';
+import { UpdateUserRequestDto } from './dto/requests/update-user.request-dto';
 import { UsersRepository } from './users.repository';
 import * as crypto from 'node:crypto';
 import * as argon from 'argon2';
@@ -8,46 +8,54 @@ import * as argon from 'argon2';
 @Injectable()
 export class UsersService {
   constructor(
-    private readonly userRepository: UsersRepository,
+    private readonly usersRepository: UsersRepository,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
-    const foundUser = await this.userRepository.findUserByLogin(createUserDto.login);
+  async create(createUserDto: CreateUserRequestDto) {
+    try {
 
-    if (foundUser) {
-      throw new ConflictException(`Username is already taken.`);
+      const foundUser = await this.usersRepository.findUserByLogin(createUserDto.login);
+      
+      if (foundUser) {
+        throw new ConflictException(`Username is already taken.`);
+      }
+      
+      const salt = crypto.randomBytes(32);
+      const hash = await argon.hash(createUserDto.password, { salt });
+      
+      const newUser = await this.usersRepository.createUser({
+        passwordHash: hash,
+        passwordSalt: salt.toString('hex'),
+        role: {
+          id: createUserDto.roleId
+        },
+        ...createUserDto
+      });
+      
+      return newUser;
+    } catch (err) {
+      throw err;
     }
-
-    const salt = crypto.randomBytes(32);
-    const hash = await argon.hash(createUserDto.password, { salt });
-
-    const newUser = await this.userRepository.createUser({
-      passwordHash: hash,
-      passwordSalt: salt.toString('hex'),
-      ...createUserDto
-    });
-
-    return newUser;
   }
 
   findAll() {
-    return this.userRepository.findAllUsers();
+    return this.usersRepository.findAllUsers();
   }
 
   findOneById(id: string) {
-    return this.userRepository.findUserById(id);
+    return this.usersRepository.findUserById(id);
   }
 
   findOneByLogin(login: string) {
-    return this.userRepository.findUserByLogin(login);
+    return this.usersRepository.findUserByLogin(login);
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return this.userRepository.updateUserById({ userId: id, ...updateUserDto });
+  update(id: string, updateUserDto: UpdateUserRequestDto) {
+    return this.usersRepository.updateUserById({ userId: id, ...updateUserDto });
   }
 
   async delete(id: string) {
-    const userDeleted = await this.userRepository.deleteUserById(id);
+    const userDeleted = await this.usersRepository.deleteUserById(id);
     if (userDeleted) {
       return;
     }
