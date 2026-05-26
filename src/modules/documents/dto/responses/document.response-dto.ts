@@ -5,7 +5,7 @@ import { Expose, plainToInstance, Type } from "class-transformer";
 
 class UserDto {
   @Expose()
-  userId!: UUID;
+  id!: UUID;
 
   @Expose()
   name!: string;
@@ -13,7 +13,7 @@ class UserDto {
 
 export class DocumentResponseDto {
   @Expose()
-  documentId!: String;
+  id!: String;
 
   @Expose()
   @IsString()
@@ -27,7 +27,7 @@ export class DocumentResponseDto {
 
   @Expose()
   @Type(() => UserDto)
-  user!: UserDto;
+  author!: UserDto;
 
   constructor(partial: Partial<Document>) {
     return plainToInstance(DocumentResponseDto, partial, { excludeExtraneousValues: true });

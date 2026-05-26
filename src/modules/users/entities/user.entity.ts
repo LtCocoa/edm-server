@@ -8,10 +8,9 @@ import { Role } from '../../database/entities/role.entity';
 })
 export class User {
   @PrimaryGeneratedColumn('uuid', {
-    name: 'user_id',
-    comment: 'Идентификатор',
+    name: 'id',
   })
-  readonly userId!: string;
+  readonly id!: string;
 
   @Column('varchar', {
     comment: 'Имя',
@@ -36,18 +35,20 @@ export class User {
   password!: string;
 
   @Column('varchar', {
-    comment: 'Хеш пароля'
+    comment: 'Хеш пароля',
+    name: 'password_hash',
   })
   @Exclude({ toPlainOnly: true })
   passwordHash!: string;
 
   @Column('varchar', {
     comment: 'Соль пароля',
+    name: 'password_salt',
   })
   @Exclude({ toPlainOnly: true })
   passwordSalt!: string;
 
-  @OneToMany(() => Document, (document) => document.user)
+  @OneToMany(() => Document, (document) => document.author)
   documents!: Document[];
 
   @ManyToOne(() => Role, {

@@ -46,10 +46,10 @@ export class UsersRepository {
     }
   }
 
-  async findUserById(userId: string): Promise<User | null> {
+  async findUserById(id: string): Promise<User | null> {
     try {
       const user = await this.usersRepository.findOne({ 
-        where: { userId },
+        where: { id },
         relations: {
           documents: true,
           role: true,
@@ -63,12 +63,12 @@ export class UsersRepository {
   }
 
   async updateUserById(params: DeepPartial<User>) {
-    const { userId } = params;
+    const { id } = params;
     try {
-      const { affected } = await this.usersRepository.update({ userId }, params);
+      const { affected } = await this.usersRepository.update({ id }, params);
       if (!!affected) {
         const updatedUser = await this.usersRepository.findOne({ 
-        where: { userId },
+        where: { id },
         relations: {
           documents: true,
           role: true,
@@ -82,9 +82,9 @@ export class UsersRepository {
     return null;
   }
 
-  async deleteUserById(userId: string): Promise<boolean> {
+  async deleteUserById(id: string): Promise<boolean> {
     try {
-      const { affected } = await this.usersRepository.delete({ userId });
+      const { affected } = await this.usersRepository.delete({ id });
       if (!!affected) {
         return true;
       }

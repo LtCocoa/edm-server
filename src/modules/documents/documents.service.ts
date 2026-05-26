@@ -3,7 +3,6 @@ import { CreateDocumentRequestDto } from './dto/requests/create-document.request
 import { UpdateDocumentRequestDto } from './dto/requests/update-document.request-dto';
 import { DocumentsRepository } from './documents.repository';
 import { UsersService } from '../users/users.service';
-import { Document } from './entities/document.entity';
 
 @Injectable()
 export class DocumentsService {
@@ -18,8 +17,8 @@ export class DocumentsService {
       throw new HttpException('User not found.', HttpStatus.FAILED_DEPENDENCY);
     }
     return this.documentsRepository.createDocument({
-      user: {
-        userId
+      author: {
+        id: userId
       },
       ...createDocumentDto
     });
@@ -37,11 +36,15 @@ export class DocumentsService {
     return null;
   }
 
-  update(documentId: string, updateDocumentDto: UpdateDocumentRequestDto) {
-    return this.documentsRepository.update(documentId, updateDocumentDto);
+  update(id: string, updateDocumentDto: UpdateDocumentRequestDto) {
+    return this.documentsRepository.update(id, updateDocumentDto);
   }
 
   remove(id: string) {
     return this.documentsRepository.delete(id);
+  }
+
+  approve(documentId: string, userId: string) {
+    console.log(documentId, userId);
   }
 }

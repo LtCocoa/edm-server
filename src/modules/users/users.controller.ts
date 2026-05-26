@@ -15,7 +15,7 @@ import { UpdateUserRequestDto } from './dto/requests/update-user.request-dto';
 import { UserResponseDto } from './dto/responses/user.response.dto';
 import { CreateUserRequestDto } from './dto/requests/create-user.request-dto';
 import { RoleGuard } from '../../shared/guards/role.guard';
-import { Role } from '../../shared/decorators/role.decorator';
+import { RequireRole } from '../../shared/decorators/role.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('users')
@@ -23,7 +23,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Role('admin')
+  @RequireRole('admin')
   @Post()
   async createUser(@Body() createUserDto: CreateUserRequestDto) {
     const newUser = await this.usersService.create(createUserDto);

@@ -1,11 +1,7 @@
-import { AddUserEntity1779278135286 } from "./1779278135286-AddUserEntity";
-import { AddDocumentEntity1779444191455 } from "./1779444191455-AddDocumentEntity";
-import { AddRoleEntity1779635096131 } from "./1779635096131-AddRoleEntity";
-import { RenameTables1779640273655 } from "./1779640273655-RenameTables";
+import { AddEntities1779640273655 } from "./1779640273655-AddEntities";
+import { AddStatusEntity1779744046452 } from "./1779744046452-AddStatusEntity";
 
 export default [
-  AddUserEntity1779278135286,
-  AddDocumentEntity1779444191455,
-  AddRoleEntity1779635096131,
-  RenameTables1779640273655,
+  AddEntities1779640273655,
+  AddStatusEntity1779744046452,
 ];

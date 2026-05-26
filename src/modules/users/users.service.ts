@@ -51,7 +51,7 @@ export class UsersService {
   }
 
   update(id: string, updateUserDto: UpdateUserRequestDto) {
-    return this.usersRepository.updateUserById({ userId: id, ...updateUserDto });
+    return this.usersRepository.updateUserById({ id, ...updateUserDto });
   }
 
   async delete(id: string) {

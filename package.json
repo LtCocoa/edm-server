@@ -23,7 +23,8 @@
     "migration:generate": "npm run typeorm -- -d src/config/orm.datasource.ts migration:generate ./src/modules/database/migrations/%npm_config_name%",
     "migration:generate_with_name": "node ./scripts/generateMigration.js",
     "migration:run": "npm run typeorm migration:run -- -d src/config/orm.datasource.ts",
-    "migration:revert": "npm run typeorm -- -d src/config/orm.datasource.ts migration:revert"
+    "migration:revert": "npm run typeorm -- -d src/config/orm.datasource.ts migration:revert",
+    "bootstrap": "ts-node src/scripts/bootstrap.ts"
   },
   "dependencies": {
     "@nestjs/class-transformer": "^0.4.0",
