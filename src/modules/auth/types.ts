@@ -1,11 +1,13 @@
 export interface JwtPayload {
-  sub: string;
-  username: string;
-  role: string;
+  user: {
+    id: string;
+    name: string;
+    role: string;
+  }
 }
 
 export interface UserRequestJwt {
-  userId: string;
+  id: string;
   name: string;
   role: string;
 }

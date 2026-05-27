@@ -16,6 +16,8 @@ import { CreateDocumentRequestDto } from './dto/requests/create-document.request
 import { UpdateDocumentRequestDto } from './dto/requests/update-document.request-dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { DocumentResponseDto } from './dto/responses/document.response-dto';
+import { RoleGuard } from '../../shared/guards/role.guard';
+import { RequireRole } from '../../shared/decorators/role.decorator';
 
 @Controller('documents')
 export class DocumentsController {
@@ -24,8 +26,8 @@ export class DocumentsController {
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createDocumentDto: CreateDocumentRequestDto, @Req() request) {
-    const { userId } = request.user;
-    return this.documentsService.create(userId, createDocumentDto);
+    const { id } = request.user;
+    return this.documentsService.create(id, createDocumentDto);
   }
 
   @Get()
@@ -36,7 +38,7 @@ export class DocumentsController {
 
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
-    const document = await this.documentsService.findOne(id);
+    const document = await this.documentsService.findDocumentById(id);
     if (!document) {
       throw new NotFoundException(`Could not find a document with id ${id}`);
     }
@@ -56,5 +58,21 @@ export class DocumentsController {
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.documentsService.remove(id);
+  }
+
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @RequireRole('manager')
+  @Post(':id/approve')
+  approve(@Param('id', ParseUUIDPipe) id: string, @Req() request) {
+    const { id: userId } = request.user;
+    return this.documentsService.approve(id, userId);
+  }
+
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @RequireRole('manager')
+  @Post(':id/reject')
+  reject(@Param('id', ParseUUIDPipe) id: string, @Req() request) {
+    const { id: userId } = request.user;
+    return this.documentsService.reject(id, userId);
   }
 }

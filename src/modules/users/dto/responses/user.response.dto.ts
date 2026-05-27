@@ -6,7 +6,7 @@ import { RoleResponseDto } from "../../../database/dto/responses/role.response-d
 export class UserResponseDto {
   @Expose()
   @IsString()
-  userId!: string;
+  id!: string;
 
   @Expose()
   @IsString()

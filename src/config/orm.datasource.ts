@@ -1,9 +1,11 @@
 import { DataSource } from 'typeorm';
 import migrations from '../modules/database/migrations';
+import * as dotenv from 'dotenv';
+
 import { User } from '../modules/users/entities/user.entity';
 import { Document } from '../modules/documents/entities/document.entity';
 import { Role } from '../modules/database/entities/role.entity';
-import * as dotenv from 'dotenv';
+import { Status } from '../modules/database/entities/status.entity';
 
 const ENV_FILE = `.env`;
 
@@ -20,7 +22,8 @@ export default new DataSource({
   entities: [
     User,
     Document,
-    Role
+    Role,
+    Status,
   ],
   migrations,
   migrationsRun: process.env.DB_MIGRATIONS_RUN === 'true',
