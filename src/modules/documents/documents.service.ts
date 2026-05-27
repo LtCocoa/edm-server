@@ -61,7 +61,12 @@ export class DocumentsService {
     });
   }
 
-  private async changeStatus(documentId: string, userId: string, statusKey: string, messages: ChangeStatusMessages) {
+  private async changeStatus(
+    documentId: string,
+    userId: string,
+    statusKey: 'approved' | 'rejected',
+    messages: ChangeStatusMessages
+  ) {
     const document = await this.documentsRepository.findOneById(documentId);
     if (!document) {
       throw new NotFoundException(`Could not ${messages.operation} document with id ${documentId} - document does not exist`);
