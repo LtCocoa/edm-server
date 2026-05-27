@@ -3,9 +3,28 @@ import { DocumentType } from "../../entities/document_types";
 import { type UUID } from "crypto";
 import { Expose, plainToInstance, Type } from "class-transformer";
 
-class UserDto {
+class AuthorDto {
   @Expose()
   id!: UUID;
+
+  @Expose()
+  name!: string;
+}
+
+class ReviewerDto {
+  @Expose()
+  id!: UUID;
+
+  @Expose()
+  name!: string;
+}
+
+class StatusDto {
+  @Expose()
+  id!: number;
+
+  @Expose()
+  key!: string;
 
   @Expose()
   name!: string;
@@ -26,8 +45,16 @@ export class DocumentResponseDto {
   type!: DocumentType;
 
   @Expose()
-  @Type(() => UserDto)
-  author!: UserDto;
+  @Type(() => AuthorDto)
+  author!: AuthorDto;
+
+  @Expose()
+  @Type(() => ReviewerDto)
+  reviewedBy!: ReviewerDto;
+
+  @Expose()
+  @Type(() => StatusDto)
+  status!: StatusDto;
 
   constructor(partial: Partial<Document>) {
     return plainToInstance(DocumentResponseDto, partial, { excludeExtraneousValues: true });

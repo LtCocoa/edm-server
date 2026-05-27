@@ -35,20 +35,27 @@ export class DocumentsRepository {
 
   async findAllDocuments() {
     return this.documentsRepository.find({ relations: {
-      author: true
+      author: true,
+      reviewedBy: true,
+      status: true,
     } });
   }
 
-  async findById(id: string) {
-    return this.documentsRepository.find({
+  async findOneById(id: string) {
+    const documents = await this.documentsRepository.find({
       relations: {
-        author: true
+        author: true,
+        reviewedBy: true,
       },
       where: {
         id
       },
       take: 1
     });
+    if (documents.length) {
+      return documents[0];
+    }
+    return null;
   }
 
   async update(id: string, params: UpdateDocumentRequestDto) {

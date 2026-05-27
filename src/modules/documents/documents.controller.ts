@@ -38,7 +38,7 @@ export class DocumentsController {
 
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
-    const document = await this.documentsService.findOne(id);
+    const document = await this.documentsService.findDocumentById(id);
     if (!document) {
       throw new NotFoundException(`Could not find a document with id ${id}`);
     }
@@ -64,7 +64,15 @@ export class DocumentsController {
   @RequireRole('manager')
   @Post(':id/approve')
   approve(@Param('id', ParseUUIDPipe) id: string, @Req() request) {
-    this.documentsService.approve(id, request.user.id);
-    return 'done';
+    const { id: userId } = request.user;
+    return this.documentsService.approve(id, userId);
+  }
+
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @RequireRole('manager')
+  @Post(':id/reject')
+  reject(@Param('id', ParseUUIDPipe) id: string, @Req() request) {
+    const { id: userId } = request.user;
+    return this.documentsService.reject(id, userId);
   }
 }

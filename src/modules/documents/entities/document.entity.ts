@@ -37,6 +37,10 @@ export class Document {
   @JoinColumn({ name: 'status_id', referencedColumnName: 'id' })
   status!: Status;
 
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'reviewed_by', referencedColumnName: 'id' })
+  reviewedBy!: User | null;
+
   constructor(partial?: Partial<Document>) {
     if (partial) {
       Object.assign(this, partial);
