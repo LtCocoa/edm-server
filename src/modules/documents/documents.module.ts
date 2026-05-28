@@ -6,6 +6,7 @@ import { Document } from './entities/document.entity';
 import { DocumentsRepository } from './documents.repository';
 import { UsersModule } from '../users/users.module';
 import { Status } from '../database/entities/status.entity';
+import { DocumentsGateway } from './documents.gateway';
 
 @Module({
   imports: [
@@ -13,6 +14,10 @@ import { Status } from '../database/entities/status.entity';
     UsersModule,
   ],
   controllers: [DocumentsController],
-  providers: [DocumentsService, DocumentsRepository],
+  providers: [
+    DocumentsService,
+    DocumentsRepository,
+    DocumentsGateway,
+  ],
 })
 export class DocumentsModule {}

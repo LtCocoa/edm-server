@@ -6,6 +6,7 @@ import { UsersService } from '../users/users.service';
 import { Status } from '../database/entities/status.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DocumentsGateway } from './documents.gateway';
 
 interface ChangeStatusMessages {
   operation: string;
@@ -16,6 +17,7 @@ export class DocumentsService {
   constructor(
     private readonly documentsRepository: DocumentsRepository,
     private readonly usersService: UsersService,
+    private readonly documentsGateway: DocumentsGateway,
     @InjectRepository(Status)
     private readonly statusesRepository: Repository<Status>
   ) {}
@@ -67,28 +69,37 @@ export class DocumentsService {
     statusKey: 'approved' | 'rejected',
     messages: ChangeStatusMessages
   ) {
+    const baseExceptionMessage = `Could not ${messages.operation} document with id ${documentId}`;
     const document = await this.documentsRepository.findOneById(documentId);
     if (!document) {
-      throw new NotFoundException(`Could not ${messages.operation} document with id ${documentId} - document does not exist`);
+      throw new NotFoundException(`${baseExceptionMessage}: document does not exist`);
     }
 
     if (document.reviewedBy != null) {
-      throw new ConflictException(`Could not ${messages.operation} documenth with id ${documentId} - document is already reviewed`);
+      throw new ConflictException(`${baseExceptionMessage}: document is already reviewed`);
     }
 
     const user = await this.usersService.findOneById(userId);
     if (!user) {
-      throw new NotFoundException(`Could not ${messages.operation} document with id ${documentId} - reviewing user does not exit`);
+      throw new NotFoundException(`${baseExceptionMessage}: reviewing user does not exit`);
     }
 
     const status = await this.statusesRepository.findOneBy({ key: statusKey });
     if (!status) {
-      throw new NotFoundException(`Could not ${messages.operation} document with id ${documentId} - ${messages.operation} status does not exit`)
+      throw new NotFoundException(`${baseExceptionMessage}: ${messages.operation} status does not exit`)
     }
 
     document.reviewedBy = user;
     document.status = status;
 
-    return this.documentsRepository.update(documentId, document);
+    const updatedDocument = await this.documentsRepository.update(documentId, document);
+
+    if (!updatedDocument) {
+      throw new ConflictException(`${baseExceptionMessage}`);
+    }
+
+    this.documentsGateway.emitStatusChange(document, statusKey);
+
+    return updatedDocument;
   }
 }
