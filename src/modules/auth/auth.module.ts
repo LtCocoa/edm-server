@@ -13,6 +13,7 @@ import { JwtStrategy, LocalStrategy } from './strategies';
     PassportModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
+      global: true,
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get('JWT_SECRET'),
         signOptions: { expiresIn: '1h' },

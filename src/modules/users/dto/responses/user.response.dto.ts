@@ -10,10 +10,6 @@ export class UserResponseDto {
 
   @Expose()
   @IsString()
-  login!: string;
-
-  @Expose()
-  @IsString()
   name!: string;
 
   @Expose()

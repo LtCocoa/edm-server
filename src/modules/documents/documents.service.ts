@@ -27,12 +27,25 @@ export class DocumentsService {
     if (!user) {
       throw new HttpException('User not found.', HttpStatus.FAILED_DEPENDENCY);
     }
-    return this.documentsRepository.createDocument({
-      author: {
-        id: userId
-      },
-      ...createDocumentDto
-    });
+
+    try {
+      const document = await this.documentsRepository.createDocument({
+        author: {
+          id: userId
+        },
+        ...createDocumentDto
+      });
+
+      if (!document) {
+        throw new ConflictException('Could not create document');
+      }
+      
+      this.documentsGateway.emitPendingDocument(document);
+      
+      return document;
+    } catch (err) {
+      throw err;
+    }
   }
 
   findAll() {
