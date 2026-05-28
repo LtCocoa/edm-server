@@ -7,11 +7,13 @@ import { DocumentsRepository } from './documents.repository';
 import { UsersModule } from '../users/users.module';
 import { Status } from '../database/entities/status.entity';
 import { DocumentsGateway } from './documents.gateway';
+import { DocumentExportModule } from '../document-export/document-export.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Document, Status]),
     UsersModule,
+    DocumentExportModule,
   ],
   controllers: [DocumentsController],
   providers: [

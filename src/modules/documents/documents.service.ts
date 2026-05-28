@@ -7,6 +7,7 @@ import { Status } from '../database/entities/status.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DocumentsGateway } from './documents.gateway';
+import { DocumentExportService } from '../document-export/document-export.service';
 
 interface ChangeStatusMessages {
   operation: string;
@@ -19,7 +20,8 @@ export class DocumentsService {
     private readonly usersService: UsersService,
     private readonly documentsGateway: DocumentsGateway,
     @InjectRepository(Status)
-    private readonly statusesRepository: Repository<Status>
+    private readonly statusesRepository: Repository<Status>,
+    private readonly documentExportService: DocumentExportService,
   ) {}
 
   async create(userId: string, createDocumentDto: CreateDocumentRequestDto) {
@@ -114,5 +116,18 @@ export class DocumentsService {
     this.documentsGateway.emitStatusChange(document, statusKey);
 
     return updatedDocument;
+  }
+
+  async generate(id: string) {
+    try {
+      const document = await this.documentsRepository.findOneById(id);
+      if (!document) {
+        return null;
+      }
+      return this.documentExportService.generate(document);
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
   }
 }

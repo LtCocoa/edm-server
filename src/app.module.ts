@@ -5,6 +5,7 @@ import { DatabaseModule } from './modules/database/database.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthModule } from './modules/auth/auth.module';
 import { DocumentsModule } from './modules/documents/documents.module';
+import { DocumentExportModule } from './modules/document-export/document-export.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { DocumentsModule } from './modules/documents/documents.module';
     UsersModule,
     AuthModule,
     DocumentsModule,
+    DocumentExportModule,
   ],
   providers: [
     {
