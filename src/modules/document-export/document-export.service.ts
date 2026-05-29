@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import Docxtemplater from 'docxtemplater';
 import PizZip from 'pizzip';
-import { readFileSync } from "fs";
 import path from "path";
+import { readFileSync } from "fs";
 import { Document } from "../documents/entities/document.entity";
 
 @Injectable()
