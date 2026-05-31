@@ -13,13 +13,12 @@ export class UsersService {
 
   async create(createUserDto: CreateUserRequestDto) {
     try {
-
       const foundUser = await this.usersRepository.findUserByLogin(createUserDto.login);
       
       if (foundUser) {
         throw new ConflictException(`Username is already taken.`);
       }
-      
+
       const salt = crypto.randomBytes(32);
       const hash = await argon.hash(createUserDto.password, { salt });
       

@@ -1,6 +1,11 @@
-import { IsEnum, IsString, IsUUID, MaxLength, MinLength } from "class-validator";
+import { IsEnum, IsString, IsUUID, MaxLength, MinLength, ValidateNested } from "class-validator";
 import { DocumentType } from "../../entities/document_types";
-import { UUID } from "crypto";
+import { Type } from "class-transformer";
+
+class ReviewerDto {
+  @IsUUID()
+  id!: string;
+}
 
 export class CreateDocumentRequestDto {
   @IsString()
@@ -10,4 +15,8 @@ export class CreateDocumentRequestDto {
 
   @IsEnum(DocumentType)
   type!: DocumentType;
+
+  @ValidateNested()
+  @Type(() => ReviewerDto)
+  reviewer!: ReviewerDto;
 }

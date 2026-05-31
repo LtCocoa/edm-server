@@ -8,7 +8,13 @@ class AuthorDto {
   id!: UUID;
 
   @Expose()
-  name!: string;
+  firstName!: string;
+
+  @Expose()
+  lastName!: string;
+
+  @Expose()
+  middleName!: string;
 }
 
 class ReviewerDto {
@@ -16,7 +22,13 @@ class ReviewerDto {
   id!: UUID;
 
   @Expose()
-  name!: string;
+  firstName!: string;
+
+  @Expose()
+  lastName!: string;
+
+  @Expose()
+  middleName!: string;
 }
 
 class StatusDto {
@@ -35,13 +47,9 @@ export class DocumentResponseDto {
   id!: String;
 
   @Expose()
-  @IsString()
-  @MinLength(4)
-  @MaxLength(20)
   title!: string;
 
   @Expose()
-  @IsEnum(DocumentType)
   type!: DocumentType;
 
   @Expose()
@@ -49,12 +57,24 @@ export class DocumentResponseDto {
   author!: AuthorDto;
 
   @Expose()
-  @Type(() => ReviewerDto)
-  reviewedBy!: ReviewerDto;
+  startDate!: Date;
+
+  @Expose()
+  endDate!: Date;
 
   @Expose()
   @Type(() => StatusDto)
   status!: StatusDto;
+  
+  @Expose()
+  @Type(() => ReviewerDto)
+  reviewer!: ReviewerDto;
+
+  @Expose()
+  reviewedAt!: Date;
+
+  @Expose()
+  comment!: string;
 
   constructor(partial: Partial<Document>) {
     return plainToInstance(DocumentResponseDto, partial, { excludeExtraneousValues: true });

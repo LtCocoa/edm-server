@@ -1,4 +1,4 @@
-import { ConflictException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDocumentRequestDto } from './dto/requests/create-document.request-dto';
 import { UpdateDocumentRequestDto } from './dto/requests/update-document.request-dto';
 import { DocumentsRepository } from './documents.repository';
@@ -24,17 +24,28 @@ export class DocumentsService {
     private readonly documentExportService: DocumentExportService,
   ) {}
 
-  async create(userId: string, createDocumentDto: CreateDocumentRequestDto) {
-    const user = await this.usersService.findOneById(userId);
-    if (!user) {
-      throw new HttpException('User not found.', HttpStatus.FAILED_DEPENDENCY);
+  async create(authorId: string, createDocumentDto: CreateDocumentRequestDto) {
+    const author = await this.usersService.findOneById(authorId);
+    if (!author) {
+      throw new ConflictException('Author user not found');
+    }
+
+    const reviewerId = createDocumentDto.reviewer.id;
+
+    const reviwer = await this.usersService.findOneById(reviewerId);
+    if (!reviwer) {
+      throw new ConflictException('Reviewer user not found');
+    }
+    if (!['manager', 'admin'].includes(reviwer.role.key)) {
+      throw new ConflictException('Reviewing user is not authorized to review this document');
     }
 
     try {
       const document = await this.documentsRepository.createDocument({
         author: {
-          id: userId
+          id: authorId
         },
+        createdAt: new Date(),
         ...createDocumentDto
       });
 
@@ -42,7 +53,10 @@ export class DocumentsService {
         throw new ConflictException('Could not create document');
       }
       
-      this.documentsGateway.emitPendingDocument(document);
+      this.documentsGateway.emitPendingDocument({
+        documentId: document.id,
+        recipientUserId: document.reviewer.id
+      });
       
       return document;
     } catch (err) {
@@ -85,12 +99,13 @@ export class DocumentsService {
     messages: ChangeStatusMessages
   ) {
     const baseExceptionMessage = `Could not ${messages.operation} document with id ${documentId}`;
+
     const document = await this.documentsRepository.findOneById(documentId);
     if (!document) {
       throw new NotFoundException(`${baseExceptionMessage}: document does not exist`);
     }
 
-    if (document.reviewedBy != null) {
+    if (document.status.key != 'pending') {
       throw new ConflictException(`${baseExceptionMessage}: document is already reviewed`);
     }
 
@@ -104,8 +119,9 @@ export class DocumentsService {
       throw new NotFoundException(`${baseExceptionMessage}: ${messages.operation} status does not exit`)
     }
 
-    document.reviewedBy = user;
+    document.reviewer = user;
     document.status = status;
+    document.reviewedAt = new Date();
 
     const updatedDocument = await this.documentsRepository.update(documentId, document);
 
@@ -113,7 +129,11 @@ export class DocumentsService {
       throw new ConflictException(`${baseExceptionMessage}`);
     }
 
-    this.documentsGateway.emitStatusChange(document, statusKey);
+    this.documentsGateway.emitStatusChange({
+      recipientUserId: document.author.id,
+      documentId: document.id,
+      statusKey: statusKey
+    });
 
     return updatedDocument;
   }
