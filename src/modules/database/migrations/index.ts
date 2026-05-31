@@ -1,9 +1,9 @@
-import { AddEntities1779640273655 } from "./1779640273655-AddEntities";
-import { AddStatusEntity1779744046452 } from "./1779744046452-AddStatusEntity";
-import { AddReviewedByColumn1779837386717 } from "./1779837386717-AddReviewedByColumn";
+import { Init1780243752058 } from "./1780243752058-Init";
+import { PopulateStatusesTable1780244062195 } from "./1780244062195-PopulateStatusesTable";
+import { PopulateRolesTable1780244312668 } from "./1780244312668-PopulateRolesTable";
 
 export default [
-  AddEntities1779640273655,
-  AddStatusEntity1779744046452,
-  AddReviewedByColumn1779837386717,
+  Init1780243752058,
+  PopulateStatusesTable1780244062195,
+  PopulateRolesTable1780244312668
 ];

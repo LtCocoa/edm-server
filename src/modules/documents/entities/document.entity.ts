@@ -12,16 +12,7 @@ export class Document {
   })
   readonly id!: string;
 
-  @ManyToOne(() => User, user => user.documents, {
-    nullable: false,
-    cascade: true,
-    onDelete: 'CASCADE'
-  })
-  @JoinColumn({ name: 'created_by', referencedColumnName: 'id' })
-  author!: User;
-
   @Column('varchar', {
-    name: 'title',
     length: 20,
   })
   title!: string;
@@ -29,7 +20,33 @@ export class Document {
   @Column('enum', {
     enum: DocumentType
   })
-  type!: DocumentType
+  type!: DocumentType;
+
+  @ManyToOne(() => User, user => user.documents, {
+    nullable: false,
+    cascade: true,
+    onDelete: 'CASCADE'
+  })
+  @JoinColumn({ name: 'author_id', referencedColumnName: 'id' })
+  author!: User;
+  
+  @Column('timestamp', {
+    name: 'created_at',
+    default: new Date(),
+  })
+  createdAt!: Date;
+
+  @Column('timestamp', {
+    name: 'start_date',
+    default: new Date(),
+  })
+  startDate!: Date;
+
+  @Column('timestamp', {
+    name: 'end_date',
+    default: new Date(),
+  })
+  endDate!: Date;
 
   @ManyToOne(() => Status, {
     nullable: false,
@@ -37,9 +54,23 @@ export class Document {
   @JoinColumn({ name: 'status_id', referencedColumnName: 'id' })
   status!: Status;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'reviewed_by', referencedColumnName: 'id' })
-  reviewedBy!: User | null;
+  @ManyToOne(() => User, {
+    nullable: false,
+  })
+  @JoinColumn({ name: 'reviewer_id', referencedColumnName: 'id' })
+  reviewer!: User;
+
+  @Column('timestamp', {
+    name: 'reviewed_at',
+    nullable: true,
+  })
+  reviewedAt!: Date;
+
+  @Column('varchar', {
+    length: 100,
+    nullable: true,
+  })
+  comment!: string;
 
   constructor(partial?: Partial<Document>) {
     if (partial) {

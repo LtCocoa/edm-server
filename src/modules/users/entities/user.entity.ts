@@ -13,14 +13,41 @@ export class User {
   readonly id!: string;
 
   @Column('varchar', {
+    name: 'first_name',
     comment: 'Имя',
     length: 20,
   })
-  name!: string;
+  firstName!: string;
+
+  @Column('varchar', {
+    name: 'last_name',
+    comment: 'Фамилия',
+    length: 20,
+  })
+  lastName!: string;
+
+  @Column('varchar', {
+    name: 'middle_name',
+    comment: 'Отчество',
+    length: 20,
+  })
+  middleName!: string;
+
+  @Column('varchar', {
+    name: 'position_name',
+    comment: 'Название должности',
+    length: 20
+  })
+  positionName!: string;
+
+  @ManyToOne(() => Role, {
+    nullable: false,
+  })
+  @JoinColumn({ name: 'role_id', referencedColumnName: 'id' })
+  role!: Role;
 
   @Column('varchar', {
     comment: 'Логин',
-    nullable: false,
     unique: true,
     length: 20,
   })
@@ -28,7 +55,6 @@ export class User {
 
   @Column('varchar', {
     comment: 'Пароль',
-    nullable: false,
     length: 20,
   })
   @Exclude({ toPlainOnly: true })
@@ -50,12 +76,6 @@ export class User {
 
   @OneToMany(() => Document, (document) => document.author)
   documents!: Document[];
-
-  @ManyToOne(() => Role, {
-    nullable: false,
-  })
-  @JoinColumn({ name: 'role_id', referencedColumnName: 'id' })
-  role!: Role;
 
   constructor(partial?: Partial<User>) {
     if (partial) {

@@ -36,7 +36,7 @@ export class DocumentsRepository {
   async findAllDocuments() {
     return this.documentsRepository.find({ relations: {
       author: true,
-      reviewedBy: true,
+      reviewer: true,
       status: true,
     } });
   }
@@ -45,7 +45,8 @@ export class DocumentsRepository {
     const documents = await this.documentsRepository.find({
       relations: {
         author: true,
-        reviewedBy: true,
+        reviewer: true,
+        status: true,
       },
       where: {
         id

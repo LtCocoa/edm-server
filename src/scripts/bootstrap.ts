@@ -25,8 +25,31 @@ async function bootstrap() {
   await userService.create({
     login,
     password,
-    name: 'Admin',
+    firstName: 'Admin',
+    lastName: 'Adminov',
+    middleName: 'Adminovich',
+    positionName: 'Admin',
     roleId: 1
+  });
+
+  await userService.create({
+    login: 'ddem',
+    password: 'cocoa',
+    firstName: 'Денис',
+    lastName: 'Дементьев',
+    middleName: 'Геннадьевич',
+    positionName: 'Руководитель отдела',
+    roleId: 2
+  });
+
+  await userService.create({
+    login: 'pepega',
+    password: 'mega',
+    firstName: 'Иван',
+    lastName: 'Иванов',
+    middleName: 'Иванович',
+    positionName: 'Работяга',
+    roleId: 3
   });
   await app.close();
 }

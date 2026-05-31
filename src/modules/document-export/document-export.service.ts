@@ -18,7 +18,7 @@ export class DocumentExportService {
       const doc = new Docxtemplater(zip);
 
       doc.render({
-        name: document.author.name
+        name: document.author.firstName
       });
 
       const buf = doc.toBuffer();
