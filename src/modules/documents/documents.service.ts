@@ -8,6 +8,8 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DocumentsGateway } from './documents.gateway';
 import { DocumentExportService } from '../document-export/document-export.service';
+import { DocumentStatusKey } from './enums/document-status-key.enum';
+import { UserRoleKey } from '../../shared/enums/user-role-key.enum';
 
 interface ChangeStatusMessages {
   operation: string;
@@ -36,7 +38,10 @@ export class DocumentsService {
     if (!reviwer) {
       throw new ConflictException('Reviewer user not found');
     }
-    if (!['manager', 'admin'].includes(reviwer.role.key)) {
+    if (![
+      UserRoleKey.ADMIN,
+      UserRoleKey.MANAGER,
+    ].includes(reviwer.role.key as UserRoleKey)) {
       throw new ConflictException('Reviewing user is not authorized to review this document');
     }
 
@@ -81,13 +86,13 @@ export class DocumentsService {
   }
 
   approve(documentId: string, userId: string) {
-    return this.changeStatus(documentId, userId, 'approved', {
+    return this.changeStatus(documentId, userId, DocumentStatusKey.APPROVED, {
       operation: 'approve'
     });
   }
 
   reject(documentId: string, userId: string) {
-    return this.changeStatus(documentId, userId, 'rejected', {
+    return this.changeStatus(documentId, userId, DocumentStatusKey.REJECTED, {
       operation: 'reject'
     });
   }
@@ -95,7 +100,7 @@ export class DocumentsService {
   private async changeStatus(
     documentId: string,
     userId: string,
-    statusKey: 'approved' | 'rejected',
+    statusKey: DocumentStatusKey.APPROVED | DocumentStatusKey.REJECTED,
     messages: ChangeStatusMessages
   ) {
     const baseExceptionMessage = `Could not ${messages.operation} document with id ${documentId}`;
@@ -105,7 +110,7 @@ export class DocumentsService {
       throw new NotFoundException(`${baseExceptionMessage}: document does not exist`);
     }
 
-    if (document.status.key != 'pending') {
+    if (document.status.key != DocumentStatusKey.PENDING) {
       throw new ConflictException(`${baseExceptionMessage}: document is already reviewed`);
     }
 

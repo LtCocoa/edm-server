@@ -1,5 +1,4 @@
 import { Reflector } from "@nestjs/core";
+import { UserRoleKey } from "../enums/user-role-key.enum";
 
-type RoleName = 'admin' | 'employee' | 'manager';
-
-export const RequireRole = Reflector.createDecorator<RoleName>();
+export const RequireRole = Reflector.createDecorator<UserRoleKey>();

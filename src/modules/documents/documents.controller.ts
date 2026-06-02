@@ -20,6 +20,7 @@ import { DocumentResponseDto } from './dto/responses/document.response-dto';
 import { RoleGuard } from '../../shared/guards/role.guard';
 import { RequireRole } from '../../shared/decorators/role.decorator';
 import { type Response } from 'express';
+import { UserRoleKey } from '../../shared/enums/user-role-key.enum';
 
 @Controller('documents')
 export class DocumentsController {
@@ -63,7 +64,7 @@ export class DocumentsController {
   }
 
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @RequireRole('manager')
+  @RequireRole(UserRoleKey.MANAGER)
   @Post(':id/approve')
   approve(@Param('id', ParseUUIDPipe) id: string, @Req() request) {
     const { id: userId } = request.user;
@@ -71,7 +72,7 @@ export class DocumentsController {
   }
 
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @RequireRole('manager')
+  @RequireRole(UserRoleKey.MANAGER)
   @Post(':id/reject')
   reject(@Param('id', ParseUUIDPipe) id: string, @Req() request) {
     const { id: userId } = request.user;

@@ -17,13 +17,14 @@ import { CreateUserRequestDto } from './dto/requests/create-user.request-dto';
 import { RoleGuard } from '../../shared/guards/role.guard';
 import { RequireRole } from '../../shared/decorators/role.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { UserRoleKey } from '../../shared/enums/user-role-key.enum';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @RequireRole('admin')
+  @RequireRole(UserRoleKey.ADMIN)
   @Post()
   async createUser(@Body() createUserDto: CreateUserRequestDto) {
     const newUser = await this.usersService.create(createUserDto);
