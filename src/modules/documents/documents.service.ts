@@ -149,6 +149,7 @@ export class DocumentsService {
       if (!document) {
         return null;
       }
+
       return this.documentExportService.generate(document);
     } catch (err) {
       console.log(err);

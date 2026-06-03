@@ -4,6 +4,7 @@ import PizZip from 'pizzip';
 import path from "path";
 import { readFileSync } from "fs";
 import { Document } from "../documents/entities/document.entity";
+import { getDocumentFileAnchors } from "./utils/create-anchors";
 
 @Injectable()
 export class DocumentExportService {
@@ -15,13 +16,13 @@ export class DocumentExportService {
       );
 
       const zip = new PizZip(content);
-      const doc = new Docxtemplater(zip);
+      const templ = new Docxtemplater(zip);
 
-      doc.render({
-        name: document.author.firstName
-      });
+      const data = getDocumentFileAnchors(document);
 
-      const buf = doc.toBuffer();
+      templ.render(data);
+
+      const buf = templ.toBuffer();
 
       return buf;
     } catch (err) {
