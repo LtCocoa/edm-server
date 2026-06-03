@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { DocumentType } from "./document_types";
 import { User } from "../../users/entities/user.entity";
 import { Status } from "../../database/entities/status.entity";
+import { DocumentType } from "../enums/document-type.enum";
 
 @Entity({
   name: 'documents',

@@ -1,7 +1,7 @@
 import { IsEnum, IsString, MaxLength, MinLength } from "class-validator";
-import { DocumentType } from "../../entities/document_types";
 import { type UUID } from "crypto";
 import { Expose, plainToInstance, Type } from "class-transformer";
+import { DocumentType } from "../../enums/document-type.enum";
 
 class AuthorDto {
   @Expose()

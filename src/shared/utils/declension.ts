@@ -1,10 +1,25 @@
 import petrovich from 'petrovich';
 import { type User } from '../../modules/users/entities/user.entity';
 
-export function toDative(user: User) {
+export interface DeclensionOutput {
+  first: string;
+  last: string;
+  middle: string;
+  gender: string;
+}
+
+export function toDative(user: User): DeclensionOutput {
   return petrovich({
-    first: 'Петр',
-    last: 'Чайковский',
-    middle: 'Ильич',
+    first: user.firstName,
+    last: user.lastName,
+    middle: user.middleName,
   }, 'dative');
+}
+
+export function toGenitive(user: User): DeclensionOutput {
+  return petrovich({
+    first: user.firstName,
+    last: user.lastName,
+    middle: user.middleName,
+  }, 'genitive');
 }

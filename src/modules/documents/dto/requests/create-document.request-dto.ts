@@ -1,6 +1,6 @@
 import { IsEnum, IsString, IsUUID, MaxLength, MinLength, ValidateNested } from "class-validator";
-import { DocumentType } from "../../entities/document_types";
 import { Type } from "class-transformer";
+import { DocumentType } from "../../enums/document-type.enum";
 
 class ReviewerDto {
   @IsUUID()

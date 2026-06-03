@@ -21,6 +21,7 @@ import { RoleGuard } from '../../shared/guards/role.guard';
 import { RequireRole } from '../../shared/decorators/role.decorator';
 import { type Response } from 'express';
 import { UserRoleKey } from '../../shared/enums/user-role-key.enum';
+import { DocumentAnchors, getDocumentFileAnchors } from '../document-export/utils/create-anchors';
 
 @Controller('documents')
 export class DocumentsController {
@@ -46,6 +47,15 @@ export class DocumentsController {
       throw new NotFoundException(`Could not find a document with id ${id}`);
     }
     return new DocumentResponseDto(document);
+  }
+
+  @Get(':id/format')
+  async format(@Param('id', ParseUUIDPipe) id: string) {
+    const document = await this.documentsService.findDocumentById(id);
+    if (!document) {
+      throw new NotFoundException(`No document with id ${document}`);
+    }
+    return getDocumentFileAnchors(document);
   }
 
   @Patch(':id')
