@@ -94,10 +94,6 @@ export class DocumentsController {
   async export(@Param('id') id: string, @Res() res: Response) {
     const buffer = await this.documentsService.generate(id);
 
-    if (!buffer) {
-      throw new NotFoundException(`Could not find document with id ${id}`);
-    }
-
     res.set({
       'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       'Conent-Disposition': 'attachment; filename=document.docx',
