@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import Docxtemplater from 'docxtemplater';
 import PizZip from 'pizzip';
 import path from "path";
@@ -27,7 +27,7 @@ export class DocumentExportService {
       return buf;
     } catch (err) {
       console.log(err);
-      return null;
+      throw new InternalServerErrorException(`Could not generate file for document with id ${document.id}`);
     }
   }
 }

@@ -86,15 +86,24 @@ export class DocumentsService {
   }
 
   approve(documentId: string, userId: string) {
-    return this.changeStatus(documentId, userId, DocumentStatusKey.APPROVED, {
-      operation: 'approve'
-    });
+    return this.changeStatus(
+      documentId,
+      userId,
+      DocumentStatusKey.APPROVED,
+      {
+        operation: 'approve'
+      }
+    );
   }
 
   reject(documentId: string, userId: string) {
-    return this.changeStatus(documentId, userId, DocumentStatusKey.REJECTED, {
-      operation: 'reject'
-    });
+    return this.changeStatus(
+      documentId,
+      userId,
+      DocumentStatusKey.REJECTED, {
+        operation: 'reject'
+      }
+    );
   }
 
   private async changeStatus(
