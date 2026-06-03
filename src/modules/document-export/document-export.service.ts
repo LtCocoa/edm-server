@@ -16,13 +16,13 @@ export class DocumentExportService {
       );
 
       const zip = new PizZip(content);
-      const templ = new Docxtemplater(zip);
+      const tmpl = new Docxtemplater(zip);
 
       const data = getDocumentFileAnchors(document);
 
-      templ.render(data);
+      tmpl.render(data);
 
-      const buf = templ.toBuffer();
+      const buf = tmpl.toBuffer();
 
       return buf;
     } catch (err) {
