@@ -32,19 +32,17 @@ export class Document {
   
   @Column('timestamp', {
     name: 'created_at',
-    default: new Date(),
   })
   createdAt!: Date;
 
   @Column('timestamp', {
     name: 'start_date',
-    default: new Date(),
   })
   startDate!: Date;
 
   @Column('timestamp', {
     name: 'end_date',
-    default: new Date(),
+    nullable: true,
   })
   endDate!: Date;
 
