@@ -4,6 +4,7 @@ import { CreateUserRequestDto } from '../users/dto/requests/create-user.request-
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
 import { JwtPayload } from './types';
+import * as argon from 'argon2';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +19,14 @@ export class AuthService {
 
   async validateUser(login: string, password: string) {
     const user = await this.usersService.findOneByLogin(login);
-    if (user?.password == password) {
+
+    if (!user) {
+      return null;
+    }
+
+    const verified = await argon.verify(user.passwordHash, password);
+
+    if (verified) {
       return user;
     }
 
