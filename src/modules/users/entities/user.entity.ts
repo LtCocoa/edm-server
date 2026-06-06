@@ -54,13 +54,6 @@ export class User {
   login!: string;
 
   @Column('varchar', {
-    comment: 'Пароль',
-    length: 20,
-  })
-  @Exclude({ toPlainOnly: true })
-  password!: string;
-
-  @Column('varchar', {
     comment: 'Хеш пароля',
     name: 'password_hash',
   })
