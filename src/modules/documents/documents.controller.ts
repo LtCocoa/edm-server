@@ -21,7 +21,7 @@ import { RoleGuard } from '../../shared/guards/role.guard';
 import { RequireRole } from '../../shared/decorators/role.decorator';
 import { type Response } from 'express';
 import { UserRoleKey } from '../../shared/enums/user-role-key.enum';
-import { DocumentAnchors, getDocumentFileAnchors } from '../document-export/utils/create-anchors';
+import { getDocumentFileAnchors } from '../document-export/utils/create-anchors';
 
 @Controller('documents')
 export class DocumentsController {
@@ -92,13 +92,17 @@ export class DocumentsController {
   // @UseGuards(JwtAuthGuard)
   @Get(':id/export')
   async export(@Param('id') id: string, @Res() res: Response) {
-    const buffer = await this.documentsService.generate(id);
-
-    res.set({
-      'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'Conent-Disposition': 'attachment; filename=document.docx',
-    });
-
-    res.send(buffer);
+    try {
+      const [fileName, buffer] = await this.documentsService.generate(id);
+      
+      res.set({
+        'Content-Type': `application/vnd.openxmlformats-officedocument.wordprocessingml.document`,
+        'Conent-Disposition': `attachment; filename=${fileName}.docx`,
+      });
+      
+      res.send(buffer);
+    } catch (err) {
+      throw err;
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserRequestDto } from './dto/requests/create-user.request-dto';
 import { UpdateUserRequestDto } from './dto/requests/update-user.request-dto';
 import { UsersRepository } from './users.repository';
@@ -14,14 +14,14 @@ export class UsersService {
   async create(createUserDto: CreateUserRequestDto) {
     try {
       const foundUser = await this.usersRepository.findUserByLogin(createUserDto.login);
-      
+
       if (foundUser) {
         throw new ConflictException(`Username is already taken.`);
       }
 
       const salt = crypto.randomBytes(32);
       const hash = await argon.hash(createUserDto.password, { salt });
-      
+
       const newUser = await this.usersRepository.createUser({
         passwordHash: hash,
         passwordSalt: salt.toString('hex'),
@@ -30,7 +30,7 @@ export class UsersService {
         },
         ...createUserDto
       });
-      
+
       return newUser;
     } catch (err) {
       throw err;

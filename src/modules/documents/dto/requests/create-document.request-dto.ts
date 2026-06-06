@@ -21,7 +21,6 @@ export class CreateDocumentRequestDto {
   @Type(() => ReviewerDto)
   reviewer!: ReviewerDto;
 
-  @ValidateIf((o: Document) => o.type === DocumentType.VACATION)
   @Type(() => Date)
   @IsDate()
   startDate!: Date;

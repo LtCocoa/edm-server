@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateDocumentRequestDto } from './dto/requests/create-document.request-dto';
 import { UpdateDocumentRequestDto } from './dto/requests/update-document.request-dto';
 import { DocumentsRepository } from './documents.repository';
@@ -156,13 +156,13 @@ export class DocumentsService {
     try {
       const document = await this.documentsRepository.findOneById(id);
       if (!document) {
-        return null;
+        throw new NotFoundException(`Could not find document with id ${id}`);
       }
 
       return this.documentExportService.generate(document);
     } catch (err) {
       console.log(err);
-      return null;
+      throw err;
     }
   }
 }
