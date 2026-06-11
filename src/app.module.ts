@@ -6,6 +6,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthModule } from './modules/auth/auth.module';
 import { DocumentsModule } from './modules/documents/documents.module';
 import { DocumentExportModule } from './modules/document-export/document-export.module';
+import { StatisticsModule } from './modules/statistics/statistics.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { DocumentExportModule } from './modules/document-export/document-export.
     AuthModule,
     DocumentsModule,
     DocumentExportModule,
+    StatisticsModule,
   ],
   providers: [
     {

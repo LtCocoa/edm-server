@@ -70,6 +70,9 @@ export class User {
   @OneToMany(() => Document, (document) => document.author)
   documents!: Document[];
 
+  @OneToMany(() => Document, (document) => document.reviewer)
+  reviewDocuments!: Document[];
+
   constructor(partial?: Partial<User>) {
     if (partial) {
       Object.assign(this, partial);
