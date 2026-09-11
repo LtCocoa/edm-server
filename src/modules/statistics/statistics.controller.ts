@@ -1,6 +1,7 @@
 import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { StatisticsService } from './statistics.service';
-import { DocumentsByMonthRequestDto } from './dto/requests/get-monthly-documents.request.dto';
+import { DocumentsByMonthRequestDto } from './dto/requests/get-documents-by-month.request.dto';
+import { DocumentsByYearRequestDto } from './dto/requests/get-documents-by-year.request.dto';
 
 @Controller('statistics')
 export class StatisticsController {
@@ -16,6 +17,12 @@ export class StatisticsController {
   getDocumentsByMonth(@Body() documentsByMonthDto: DocumentsByMonthRequestDto) {
     const { startDate: startDateString, endDate: endDateString } = documentsByMonthDto;
     
-    return this.statisticsService.getDocumentsByMonth(startDateString, endDateString);
+    return this.statisticsService.getDocumentsCreatedByMonth(startDateString, endDateString);
+  }
+
+  @Post('yearly-documents-by-month')
+  @HttpCode(200)
+  getDocumentsByYear(@Body() documentsByYearDto: DocumentsByYearRequestDto) {
+    return this.statisticsService.getYearlyDocumentsCreatedByMonth(documentsByYearDto.year);
   }
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Document } from '../documents/entities/document.entity';
 import { Repository } from 'typeorm';
@@ -12,6 +12,8 @@ export class StatisticsService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Document)
     private readonly documentsRepository: Repository<Document>,
+    @Inject('API_URL')
+    private readonly apiUrl: string,
   ) {}
 
   async getReviewers() {
@@ -25,9 +27,9 @@ export class StatisticsService {
         })
         .select('reviewer.id', 'reviewerId')
         .addSelect('reviewer.firstName', 'reviewerName')
-        .addSelect("COUNT(*) FILTER (WHERE status.key = 'pending')", 'pending')
-        .addSelect("COUNT(*) FILTER (WHERE status.key = 'approved')", 'approved')
-        .addSelect("COUNT(*) FILTER (WHERE status.key = 'rejected')", 'rejected')
+        .addSelect("COUNT(*) FILTER (WHERE status.key = 'pending')::int", 'pending')
+        .addSelect("COUNT(*) FILTER (WHERE status.key = 'approved')::int", 'approved')
+        .addSelect("COUNT(*) FILTER (WHERE status.key = 'rejected')::int", 'rejected')
         .groupBy('reviewer.id')
         .addGroupBy('reviewer.firstName')
         .getRawMany();
@@ -37,7 +39,7 @@ export class StatisticsService {
     }
   }
 
-  async getDocumentsByMonth(startDateString: string, endDateString: string) {
+  async getDocumentsCreatedByMonth(startDateString: string, endDateString: string) {
     const [
       startDate,
       endDate
@@ -46,6 +48,14 @@ export class StatisticsService {
       new Date(endDateString).toLocaleDateString('sv'),
     ];
 
+    if (startDate == 'Invalid Date') {
+      throw new Error('startDateString is not a valid date string');
+    }
+
+    if (endDate == 'Invalid Date') {
+      throw new Error('endDateString is not a valid date string');
+    }
+
     if (startDate >= endDate) {
       throw new BadRequestException('Start date must be before end date');
     }
@@ -53,7 +63,7 @@ export class StatisticsService {
     const result = await this.documentsRepository.query(`
       SELECT
         TO_CHAR(months.month, 'YYYY-MM') AS month,
-        COUNT(document.id) AS "documentsCreated"
+        COUNT(document.id)::int AS "documentsCreated"
       FROM generate_series(
         $1::date,
         $2::date,
@@ -74,5 +84,13 @@ export class StatisticsService {
     ]);
 
     return result;
+  }
+
+  async getYearlyDocumentsCreatedByMonth(year: number) {
+    const startDate = `${year}-01-01`;
+    const endDate = `${year}-12-31`;
+    const res = await this.getDocumentsCreatedByMonth(startDate, endDate);
+
+    return res;
   }
 }
